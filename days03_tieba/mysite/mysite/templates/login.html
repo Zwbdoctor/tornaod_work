@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="/static/js/jquery/jquery-3.1.1.min.js"></script>
+    <title>贴吧登录</title>
+</head>
+<body>
+<h2>贴吧登录</h2>
+<hr/>
+<form action="">
+    用户名：<input type="text" name="username" placeholder="请输入用户名："><br/>
+    密 码：<input type="text" name="password" placeholder="请输入密码："><br/>
+    <input id="commit" type="button" value="登录">
+    <span id="msg"></span>
+</form>
+<span>还没账号？点此<a href="/register">注册</a></span>
+<script>
+    function getCookies(name){
+        var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+        return r ? r[1] : undefined;
+    }
+    $(function(){
+        $("#commit").click(function(){
+            var $username = $("input[name=username]").val();
+            var $password = $("input[name=password]").val();
+            $c = getCookies("_xsrf");
+            $.ajax({
+                url:"/login",
+                type: "POST",
+                data:{
+                    _xsrf: $c,
+                    username: $username,
+                    password: $password
+                },
+                success: function(resp){
+                    var obj = jQuery.parseJSON(resp);
+                    if(obj.status == 1){
+                        alert(obj.status);
+                        location.href="/"
+                    }else{
+                        $("#msg").text(obj.message)
+//                        $("#msg").text("sdfsf")
+                    }
+                },
+                error: function () {
+                    $("#msg").text("数据传送失败！！！")
+                }
+            })
+        })
+    })
+</script>
+</body>
+</html>

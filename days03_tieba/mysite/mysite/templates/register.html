@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>贴吧注册</title>
+    <script type="text/javascript" src="/static/js/jquery/jquery-3.1.1.min.js"></script>
+</head>
+<body>
+    <h2>贴吧注册</h2>
+    <hr/>
+    <form action="">
+        用户名：<input type="text" name="username" placeholder="请输入用户名："><br/>
+        密 码：<input type="password" name="password" placeholder="请输入密码："><br/>
+        请输入确认密码：<input type="password" name="confirmpsw" placeholder="请输入确认密码："><br/>
+        <input id="cmt" type="button" value="注册">
+        <span id="msg"></span>
+    </form>
+</body>
+<script>
+    function getCookie(name) {
+        var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+//        alert(r, r[1]);
+        return r ? r[1] : undefined;
+    }
+    $(function(){
+        $("#cmt").click(function(){
+            $c = getCookie('_xsrf');
+            $.ajax({
+                url: "/register",
+                type: "POST",
+                allowDomain: true,
+                data: {
+                    _xsrf: $c,
+                    username: $("input[name=username]").val(),
+                    password: $("input[name=password]").val(),
+                    confirmpsw: $("input[name=confirmpsw]").val()
+                },
+                success: function(resp){
+                    var res = $.parseJSON(resp);
+                    if(res.status == 1){
+                        location.href="/login"
+                    }else{
+//                        console.log(res.msg);
+                        $("#msg").text(res.msg)
+                    }
+                },
+                error: function(){
+                    $("#msg").text("数据传送失败！！！")
+                }
+            })
+        })
+    })
+</script>
+</html>
